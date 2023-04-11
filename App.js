@@ -1,8 +1,13 @@
 import React, {useState} from 'react';
 import { SelectList } from 'react-native-dropdown-select-list'
 import {Alert, Modal, StyleSheet, Text, Pressable, View} from 'react-native';
+import {NavigationContainer} from '@react-navigation/native';
+import { enableScreens } from 'react-native-screens';
+import { createNativeStackNavigator } from 'react-native-screens/native-stack';
 
-const App = () => {
+enableScreens();
+
+function HomeScreen({ navigation }) {
   const [modalVisible, setModalVisible] = useState(false);
   const [selected, setSelected] = React.useState("");
   
@@ -15,6 +20,11 @@ const App = () => {
       {key:'6', value:'9x9'},
       {key:'7', value:'10x10'},
   ]
+
+  function doubleWhammy(){
+    setModalVisible(!modalVisible);
+    navigation.navigate("Board");
+  }
 
   return (
     <View style={styles.centeredView}>
@@ -30,13 +40,16 @@ const App = () => {
           <View style={styles.modalView}>
             <Text style={styles.modalText}>Choose your game's dimensions</Text>
             <SelectList 
+                style={styles.modalText}
                 setSelected={(val) => setSelected(val)} 
                 data={data} 
                 save="value"
             />
             <Pressable
               style={[styles.button, styles.buttonClose]}
-              onPress={() => setModalVisible(!modalVisible)}>
+              onPress={() => 
+                doubleWhammy()
+              }>
               <Text style={styles.textStyle}>Done</Text>
             </Pressable>
           </View>
@@ -49,7 +62,21 @@ const App = () => {
       </Pressable>
     </View>
   );
-};
+}
+
+
+
+function Board() {
+  return (
+    <View style={styles.centeredView}>
+      <Text>Game board</Text>
+    </View>
+  );
+}
+
+const Stack = createNativeStackNavigator();
+
+
 
 const styles = StyleSheet.create({
   centeredView: {
@@ -92,9 +119,19 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   modalText: {
+    color: 'black',
     marginBottom: 15,
     textAlign: 'center',
   },
 });
 
-export default App;
+export default function App() {
+  return(
+  <NavigationContainer>
+    <Stack.Navigator screenOptions={{ headerShown: false }}>
+      <Stack.Screen name="Home" component={HomeScreen}/>
+      <Stack.Screen name="Board" component={Board}/>
+    </Stack.Navigator>
+  </NavigationContainer>
+  );
+};
