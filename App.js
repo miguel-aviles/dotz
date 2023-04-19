@@ -1,6 +1,6 @@
 import React, {useState} from 'react';
 import { SelectList } from 'react-native-dropdown-select-list'
-import {Alert, Modal, StyleSheet, Text, Pressable, View} from 'react-native';
+import {Alert, Modal, StyleSheet, Text, TouchableHighlight, Pressable, View, Button} from 'react-native';
 import {NavigationContainer} from '@react-navigation/native';
 import { enableScreens } from 'react-native-screens';
 import { createNativeStackNavigator } from 'react-native-screens/native-stack';
@@ -42,8 +42,9 @@ function HomeScreen({ navigation }) {
             <SelectList 
                 style={styles.modalText}
                 setSelected={(val) => setSelected(val)} 
-                data={data} 
+                data={data}
                 save="value"
+                
             />
             <Pressable
               style={[styles.button, styles.buttonClose]}
@@ -67,10 +68,20 @@ function HomeScreen({ navigation }) {
 
 
 function Board() {
+  var [ isPress, setIsPress ] = React.useState(false);
+
+  var touchProps = {
+    // <-- "backgroundColor" will be always overwritten by "underlayColor"
+    style: isPress ? styles.dotPress : styles.dot, // <-- but you can still apply other style changes
+    onPress: () => isPress ? setIsPress(false) : setIsPress(true),                 // <-- "onPress" is apparently required
+  };
+
   return (
-    <View style={styles.centeredView}>
-      <Text>Game board</Text>
-    </View>
+        <View style={styles.container}>
+          <TouchableHighlight {...touchProps}>
+            <View/>
+          </TouchableHighlight>
+        </View>
   );
 }
 
@@ -84,6 +95,34 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     marginTop: 22,
+    backgroundColor: 'white',
+  },
+  boardView: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'white',
+  },
+  dot: {
+    borderRadius: 15,
+    width: 30,
+    height: 30,
+    backgroundColor: 'black',
+    borderColor: 'white',
+    borderWidth: 3,
+  },
+  dotPress: {
+    borderRadius: 15,
+    width: 30,
+    height: 30,
+    backgroundColor: 'black',
+    borderColor: 'blue',
+    borderWidth: 3,
+  },
+  container: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
     backgroundColor: 'white',
   },
   modalView: {
